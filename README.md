@@ -1,4 +1,4 @@
-# qb-banking
+# slk-banking
 
 # License
 
@@ -19,10 +19,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 ## Dependencies
-- [qb-core](https://github.com/qbcore-framework/qb-core)
-- [qb-logs](https://github.com/qbcore-framework/qb-logs) - For keeping records
+
+- [slk-core](https://github.com/qbcore-framework/slk-core)
+- [slk-logs](https://github.com/qbcore-framework/slk-logs) - For keeping records
 
 ## Screenshots
+
 ![Account Home](https://i.imgur.com/XazaYYI.png)
 ![Debit Card Selection on ATM](https://i.imgur.com/dvJ9hnC.png)
 ![Savings Account](https://i.imgur.com/1HFUL06.png)
@@ -30,6 +32,7 @@
 ![Account Options](https://i.imgur.com/blMgfpG.png)
 
 ## Features
+
 - Debit card (MasterCard/Visa) with PIN
 - Savings Account
 - Detailed interface
@@ -37,27 +40,35 @@
 - Business and Gang accounts
 
 ## Installation
+
 ### Manual
+
 - Download the script and put it in the `[qb]` directory.
-- Import `qb-banking.sql` in your database
+- Import `slk-banking.sql` in your database
 - Add the following code to your server.cfg/resouces.cfg
+
 ```
-ensure qb-core
-ensure qb-logs
-ensure qb-banking
+ensure slk-core
+ensure slk-logs
+ensure slk-banking
 ```
+
 # Server.cfg Convar Update
+
 - Global DrawTextUi Option
+
 ```
 setr UseTarget false
-``` 
+```
 
 - Global Target Option
+
 ```
 setr UseTarget true
 ```
 
 ## Configuration
+
 ```
 Config = {}
 
@@ -83,7 +94,7 @@ Config.BankLocations = { -- Bank locations
     { ['x'] = -2962.71, ['y'] = 483.0,      ['z'] = 15.7,   ['bankOpen'] = true, ['bankCooldown'] = 0 },
     { ['x'] = 1175.07,  ['y'] = 2706.41,    ['z'] = 38.09,  ['bankOpen'] = true, ['bankCooldown'] = 0 },
     { ['x'] = 1653.41,  ['y'] = 4850.6,     ['z'] = 41.99,  ['bankOpen'] = true, ['bankCooldown'] = 0 },
-    
+
     -- Pacific Standard Bank
     { ['x'] = 246.64, ['y'] = 223.20, ['z'] = 106.29, ['bankOpen'] = true, ['bankCooldown'] = 0 },
     -- Paleto

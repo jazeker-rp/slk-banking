@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['slk-core']:GetCoreObject()
 local processed = false
 
 function generateCurrent(cid)
@@ -130,7 +130,7 @@ function generateCurrent(cid)
                 genId = cardNumber
 
                 if self.source ~= -1 then
-                    TriggerClientEvent('qb-banking:client:newCardSuccess', self.source, cardNumber, friendlyName)
+                    TriggerClientEvent('slk-banking:client:newCardSuccess', self.source, cardNumber, friendlyName)
                     local xPlayer = QBCore.Functions.GetPlayer(self.source)
 
                     if selectedCard == "visa" then
@@ -278,7 +278,7 @@ function generateCurrent(cid)
     return rTable
 end
 
-RegisterNetEvent('qb-banking:server:registerCurrentAccount', function(cid)
+RegisterNetEvent('slk-banking:server:registerCurrentAccount', function(cid)
     if not currentAccounts[cid] then
         currentAccounts[cid] = generateCurrent(cid)
     end
@@ -382,7 +382,7 @@ function generateSavings(cid)
     return rTable
 end
 
-RegisterNetEvent('qb-banking:server:registerSavingsAccount', function(cid)
+RegisterNetEvent('slk-banking:server:registerSavingsAccount', function(cid)
     if not savingsAccounts[cid] then
         savingsAccounts[cid] = generateSavings(cid)
     end

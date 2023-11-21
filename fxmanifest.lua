@@ -1,11 +1,11 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'QB-Banking'
+description 'slk-Banking'
 version '1.2.1'
 
 shared_scripts {
-    '@qb-core/shared/locale.lua',
+    '@slk-core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
     'config/config.lua'
@@ -20,9 +20,9 @@ server_scripts {
 }
 
 client_script {
-    '@PolyZone/client.lua',
-    '@PolyZone/BoxZone.lua',
-    '@PolyZone/ComboZone.lua',
+    '@slk-polyzones/client.lua',
+    '@slk-polyzones/BoxZone.lua',
+    '@slk-polyzones/ComboZone.lua',
     'client/main.lua'
 }
 
@@ -35,7 +35,7 @@ files {
     'nui/scripting/jquery-ui.js',
     'nui/style.css',
     'nui/index.html',
-    'nui/qb-banking.js',
+    'nui/slk-banking.js',
 }
 
 lua54 'yes'

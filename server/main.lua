@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['slk-core']:GetCoreObject()
 
 CreateThread(function()
     local accts = MySQL.query.await('SELECT * FROM bank_accounts WHERE account_type = ?', { 'Business' })
@@ -66,7 +66,7 @@ exports('gang', function(gid)
     end
 end)
 
---[[ -- Only used by the following "qb-banking:initiateTransfer"
+--[[ -- Only used by the following "slk-banking:initiateTransfer"
 
 local function getCharacterName(cid)
     local src = source
@@ -96,7 +96,7 @@ end
 
 ]]
 
-RegisterNetEvent('qb-banking:initiateTransfer', function(_)
+RegisterNetEvent('slk-banking:initiateTransfer', function(_)
     --[[
     local _src = source
     local _startChar = QBCore.Functions.GetPlayer(_src)
@@ -110,27 +110,27 @@ RegisterNetEvent('qb-banking:initiateTransfer', function(_)
         while receiptName == nil do Wait(0) end
 
         if receiptName ~= false or receiptName ~= nil then
-            local userOnline = exports.qb-base:checkOnline(cid)
+            local userOnline = exports.slk-base:checkOnline(cid)
 
             if userOnline ~= false then
                 -- User is online so we can do a straght transfer
-                local _targetUser = exports.qb-base:Source(userOnline)
+                local _targetUser = exports.slk-base:Source(userOnline)
                 if acType == "Current" then
                     local targetBank = _targetUser:Bank().Add(data.amount, 'Bank Transfer from '.._startChar.GetName())
                     while targetBank == nil do Wait(0) end
                     local bank = _startChar:Bank().Remove(data.amount, 'Bank Transfer to '..receiptName)
                     TriggerClientEvent('pw:notification:SendAlert', _src, {type = "inform", text = "You have sent a bank transfer to "..receiptName..' for the amount of $'..data.amount, length = 5000})
                     TriggerClientEvent('pw:notification:SendAlert', userOnline, {type = "inform", text = "You have received a bank transfer from ".._startChar.GetName()..' for the amount of $'..data.amount, length = 5000})
-                    TriggerClientEvent('qb-banking:openBankScreen', _src)
-                    TriggerClientEvent('qb-banking:successAlert', _src, 'You have sent a bank transfer to '..receiptName..' for the amount of $'..data.amount)
+                    TriggerClientEvent('slk-banking:openBankScreen', _src)
+                    TriggerClientEvent('slk-banking:successAlert', _src, 'You have sent a bank transfer to '..receiptName..' for the amount of $'..data.amount)
                 else
                     local targetBank = savingsAccounts[cid].AddMoney(data.amount, 'Bank Transfer from '.._startChar.GetName())
                     while targetBank == nil do Wait(0) end
                     local bank = _startChar:Bank().Remove(data.amount, 'Bank Transfer to '..receiptName)
                     TriggerClientEvent('pw:notification:SendAlert', _src, {type = "inform", text = "You have sent a bank transfer to "..receiptName..' for the amount of $'..data.amount, length = 5000})
                     TriggerClientEvent('pw:notification:SendAlert', userOnline, {type = "inform", text = "You have received a bank transfer from ".._startChar.GetName()..' for the amount of $'..data.amount, length = 5000})
-                    TriggerClientEvent('qb-banking:openBankScreen', _src)
-                    TriggerClientEvent('qb-banking:successAlert', _src, 'You have sent a bank transfer to '..receiptName..' for the amount of $'..data.amount)
+                    TriggerClientEvent('slk-banking:openBankScreen', _src)
+                    TriggerClientEvent('slk-banking:successAlert', _src, 'You have sent a bank transfer to '..receiptName..' for the amount of $'..data.amount)
                 end
 
             else
@@ -165,8 +165,8 @@ RegisterNetEvent('qb-banking:initiateTransfer', function(_)
                                             if statementUpdated > 0 then
                                                 local bank = _startChar:Bank().Remove(data.amount, 'Bank Transfer to '..receiptName)
                                                 TriggerClientEvent('pw:notification:SendAlert', _src, {type = "inform", text = "You have sent a bank transfer to "..receiptName..' for the amount of $'..data.amount, length = 5000})
-                                                TriggerClientEvent('qb-banking:openBankScreen', _src)
-                                                TriggerClientEvent('qb-banking:successAlert', _src, 'You have sent a bank transfer to '..receiptName..' for the amount of $'..data.amount)
+                                                TriggerClientEvent('slk-banking:openBankScreen', _src)
+                                                TriggerClientEvent('slk-banking:successAlert', _src, 'You have sent a bank transfer to '..receiptName..' for the amount of $'..data.amount)
                                             end
                                         end)
                                     end
@@ -178,7 +178,7 @@ RegisterNetEvent('qb-banking:initiateTransfer', function(_)
         end
     else
         -- Send error to client that account details do no exist.
-        TriggerClientEvent('qb-banking:transferError', _src, 'The account details entered could not be located.')
+        TriggerClientEvent('slk-banking:transferError', _src, 'The account details entered could not be located.')
     end
 ]]
 end)
@@ -234,7 +234,7 @@ local function toggleBankCardLock(cid, lockStatus)
     MySQL.update('UPDATE bank_cards SET cardLocked = ? WHERE citizenid = ?', { lockStatus, cid})
 end
 
-QBCore.Functions.CreateCallback('qb-banking:getBankingInformation', function(source, cb)
+QBCore.Functions.CreateCallback('slk-banking:getBankingInformation', function(source, cb)
     local xPlayer = QBCore.Functions.GetPlayer(source)
     if not xPlayer then return cb(nil) end
     local bankStatements = getBankStatements(xPlayer.PlayerData.citizenid)
@@ -262,7 +262,7 @@ end)
 
 -- Creates a new bank card.
 -- If the player already has a card it will replace the existing card with the new one
-RegisterNetEvent('qb-banking:createBankCard', function(pin)
+RegisterNetEvent('slk-banking:createBankCard', function(pin)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     local cid = xPlayer.PlayerData.citizenid
@@ -285,13 +285,13 @@ RegisterNetEvent('qb-banking:createBankCard', function(pin)
 
     addNewBankCard(cid, cardNumber, info.cardPin, info.cardActive, 0, info.cardType)
 
-    TriggerClientEvent('qb-banking:openBankScreen', src)
-    TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.debit_card'))
+    TriggerClientEvent('slk-banking:openBankScreen', src)
+    TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.debit_card'))
 
-    TriggerEvent('qb-log:server:CreateLog', 'banking', 'Banking', 'lightgreen', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** successfully ordered a debit card")
+    TriggerEvent('slk-log:server:CreateLog', 'banking', 'Banking', 'lightgreen', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** successfully ordered a debit card")
 end)
 
-RegisterNetEvent('qb-banking:doQuickDeposit', function(amount)
+RegisterNetEvent('slk-banking:doQuickDeposit', function(amount)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     if not xPlayer then return end
@@ -304,14 +304,14 @@ RegisterNetEvent('qb-banking:doQuickDeposit', function(amount)
         addBankStatement(xPlayer.PlayerData.citizenid, 'Bank', amount, 0, newBankBalance, Lang:t('info.deposit', {amount = amount}))
 
         if bank then
-            TriggerClientEvent('qb-banking:openBankScreen', src)
-            TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.cash_deposit', {value = amount}))
-            TriggerEvent('qb-log:server:CreateLog', 'banking', 'Banking', 'lightgreen', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a cash deposit of $"..amount.." successfully.")
+            TriggerClientEvent('slk-banking:openBankScreen', src)
+            TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.cash_deposit', {value = amount}))
+            TriggerEvent('slk-log:server:CreateLog', 'banking', 'Banking', 'lightgreen', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a cash deposit of $"..amount.." successfully.")
         end
     end
 end)
 
-RegisterNetEvent('qb-banking:toggleCard', function(toggle)
+RegisterNetEvent('slk-banking:toggleCard', function(toggle)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
 
@@ -320,7 +320,7 @@ RegisterNetEvent('qb-banking:toggleCard', function(toggle)
     toggleBankCardLock(xPlayer.PlayerData.citizenid, toggle)
 end)
 
-RegisterNetEvent('qb-banking:doQuickWithdraw', function(amount, _)
+RegisterNetEvent('slk-banking:doQuickWithdraw', function(amount, _)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     if not xPlayer then return end
@@ -332,14 +332,14 @@ RegisterNetEvent('qb-banking:doQuickWithdraw', function(amount, _)
         local cash = xPlayer.Functions.RemoveMoney('bank', tonumber(amount), 'banking-quick-withdraw')
         bank = xPlayer.Functions.AddMoney('cash', tonumber(amount), 'banking-quick-withdraw')
         if cash then
-            TriggerClientEvent('qb-banking:openBankScreen', src)
-            TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.cash_withdrawal', {value = amount}))
-            TriggerEvent('qb-log:server:CreateLog', 'banking', 'Banking', 'red', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a cash withdrawal of $"..amount.." successfully.")
+            TriggerClientEvent('slk-banking:openBankScreen', src)
+            TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.cash_withdrawal', {value = amount}))
+            TriggerEvent('slk-log:server:CreateLog', 'banking', 'Banking', 'red', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a cash withdrawal of $"..amount.." successfully.")
         end
     end
 end)
 
-RegisterNetEvent('qb-banking:updatePin', function(currentBankCard, newPin)
+RegisterNetEvent('slk-banking:updatePin', function(currentBankCard, newPin)
     if newPin ~= nil then
         local src = source
         local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -350,8 +350,8 @@ RegisterNetEvent('qb-banking:updatePin', function(currentBankCard, newPin)
             currentBankCard.record_id
         }, function(result)
             if result == 1 then
-                TriggerClientEvent('qb-banking:openBankScreen', src)
-                TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.updated_pin'))
+                TriggerClientEvent('slk-banking:openBankScreen', src)
+                TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.updated_pin'))
             else
                 TriggerClientEvent('QBCore:Notify', src, 'Error updating pin', "error")
             end
@@ -359,7 +359,7 @@ RegisterNetEvent('qb-banking:updatePin', function(currentBankCard, newPin)
     end
 end)
 
-RegisterNetEvent('qb-banking:savingsDeposit', function(amount)
+RegisterNetEvent('slk-banking:savingsDeposit', function(amount)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     if not xPlayer then return end
@@ -368,13 +368,13 @@ RegisterNetEvent('qb-banking:savingsDeposit', function(amount)
     if tonumber(amount) <= currentBank then
         local bank = xPlayer.Functions.RemoveMoney('bank', tonumber(amount))
         local savings = savingsAccounts[xPlayer.PlayerData.citizenid].AddMoney(tonumber(amount), Lang:t('info.current_to_savings'))
-        TriggerClientEvent('qb-banking:openBankScreen', src)
-        TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.savings_deposit', {value = tostring(amount)}))
-        TriggerEvent('qb-log:server:CreateLog', 'banking', 'Banking', 'lightgreen', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a savings deposit of $"..tostring(amount).." successfully..")
+        TriggerClientEvent('slk-banking:openBankScreen', src)
+        TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.savings_deposit', {value = tostring(amount)}))
+        TriggerEvent('slk-log:server:CreateLog', 'banking', 'Banking', 'lightgreen', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a savings deposit of $"..tostring(amount).." successfully..")
     end
 end)
 
-RegisterNetEvent('qb-banking:savingsWithdraw', function(amount)
+RegisterNetEvent('slk-banking:savingsWithdraw', function(amount)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     if not xPlayer then return end
@@ -383,20 +383,20 @@ RegisterNetEvent('qb-banking:savingsWithdraw', function(amount)
     if tonumber(amount) <= currentSavings then
         local savings = savingsAccounts[xPlayer.PlayerData.citizenid].RemoveMoney(tonumber(amount), Lang:t('info.savings_to_current'))
         local bank = xPlayer.Functions.AddMoney('bank', tonumber(amount), 'banking-quick-withdraw')
-        TriggerClientEvent('qb-banking:openBankScreen', src)
-        TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.savings_withdrawal', {value = tostring(amount)}))
-        TriggerEvent('qb-log:server:CreateLog', 'banking', 'Banking', 'red', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a savings withdrawal of $"..tostring(amount).." successfully.")
+        TriggerClientEvent('slk-banking:openBankScreen', src)
+        TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.savings_withdrawal', {value = tostring(amount)}))
+        TriggerEvent('slk-log:server:CreateLog', 'banking', 'Banking', 'red', "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** made a savings withdrawal of $"..tostring(amount).." successfully.")
     end
 end)
 
-RegisterNetEvent('qb-banking:createSavingsAccount', function()
+RegisterNetEvent('slk-banking:createSavingsAccount', function()
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     local success = createSavingsAccount(xPlayer.PlayerData.citizenid)
     repeat Wait(0) until success ~= nil
-    TriggerClientEvent('qb-banking:openBankScreen', src)
-    TriggerClientEvent('qb-banking:successAlert', src, Lang:t('success.opened_savings'))
-    TriggerEvent('qb-log:server:CreateLog', 'banking', 'Banking', "lightgreen", "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** opened a savings account")
+    TriggerClientEvent('slk-banking:openBankScreen', src)
+    TriggerClientEvent('slk-banking:successAlert', src, Lang:t('success.opened_savings'))
+    TriggerEvent('slk-log:server:CreateLog', 'banking', 'Banking', "lightgreen", "**"..GetPlayerName(xPlayer.PlayerData.source) .. " (citizenid: "..xPlayer.PlayerData.citizenid.." | id: "..xPlayer.PlayerData.source..")** opened a savings account")
 end)
 
 

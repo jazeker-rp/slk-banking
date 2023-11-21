@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['slk-core']:GetCoreObject()
 local blips = {}
 
 -- Functions
@@ -25,7 +25,7 @@ local function removeBlips()
 end
 
 local function openAccountScreen()
-    QBCore.Functions.TriggerCallback('qb-banking:getBankingInformation', function(banking)
+    QBCore.Functions.TriggerCallback('slk-banking:getBankingInformation', function(banking)
         if banking ~= nil then
             SetNuiFocus(true, true)
             SendNUIMessage({
@@ -46,21 +46,21 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     removeBlips()
 end)
 
-RegisterNetEvent('qb-banking:transferError', function(msg)
+RegisterNetEvent('slk-banking:transferError', function(msg)
     SendNUIMessage({
         status = "transferError",
         error = msg
     })
 end)
 
-RegisterNetEvent('qb-banking:successAlert', function(msg)
+RegisterNetEvent('slk-banking:successAlert', function(msg)
     SendNUIMessage({
         status = "successMessage",
         message = msg
     })
 end)
 
-RegisterNetEvent('qb-banking:openBankScreen', function()
+RegisterNetEvent('slk-banking:openBankScreen', function()
     openAccountScreen()
 end)
 
@@ -70,8 +70,8 @@ local BankControlPress = false
         BankControlPress = true
         while BankControlPress do
             if IsControlPressed(0, 38) then
-                exports['qb-core']:KeyPressed()
-                TriggerEvent('qb-banking:openBankScreen')
+                exports['slk-core']:KeyPressed()
+                TriggerEvent('slk-banking:openBankScreen')
             end
             Wait(0)
         end
@@ -81,7 +81,7 @@ end
 CreateThread(function()
     if Config.UseTarget then
         for k, v in pairs(Config.Zones) do
-            exports["qb-target"]:AddBoxZone("Bank_"..k, v.position, v.length, v.width, {
+            exports["slk-target"]:AddBoxZone("Bank_"..k, v.position, v.length, v.width, {
                 name = "Bank_"..k,
                 heading = v.heading,
                 minZ = v.minZ,
@@ -90,7 +90,7 @@ CreateThread(function()
                 options = {
                     {
                         type = "client",
-                        event = "qb-banking:openBankScreen",
+                        event = "slk-banking:openBankScreen",
                         icon = "fas fa-university",
                         label = "Access Bank",
                     }
@@ -111,11 +111,11 @@ CreateThread(function()
             local bankCombo = ComboZone:Create(bankPoly, {name = "bankPoly"})
             bankCombo:onPlayerInOut(function(isPointInside)
                 if isPointInside then
-                    exports['qb-core']:DrawText(Lang:t('info.access_bank_key'),'left')
+                    exports['slk-core']:DrawText(Lang:t('info.access_bank_key'),'left')
                     BankControl()
                 else
                     BankControlPress = false
-                    exports['qb-core']:HideText()
+                    exports['slk-core']:HideText()
                 end
             end)
         end
@@ -131,7 +131,7 @@ RegisterNetEvent("hidemenu", function()
     })
 end)
 
-RegisterNetEvent('qb-banking:client:newCardSuccess', function(cardno, ctype)
+RegisterNetEvent('slk-banking:client:newCardSuccess', function(cardno, ctype)
     SendNUIMessage({
         status = "updateCard",
         number = cardno,
@@ -150,13 +150,13 @@ RegisterNUICallback("NUIFocusOff", function(_, cb)
 end)
 
 RegisterNUICallback("createSavingsAccount", function(_, cb)
-    TriggerServerEvent('qb-banking:createSavingsAccount')
+    TriggerServerEvent('slk-banking:createSavingsAccount')
     cb("ok")
 end)
 
 RegisterNUICallback("doDeposit", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
-        TriggerServerEvent('qb-banking:doQuickDeposit', data.amount)
+        TriggerServerEvent('slk-banking:doQuickDeposit', data.amount)
         openAccountScreen()
         cb("ok")
     end
@@ -165,7 +165,7 @@ end)
 
 RegisterNUICallback("doWithdraw", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
-        TriggerServerEvent('qb-banking:doQuickWithdraw', data.amount, true)
+        TriggerServerEvent('slk-banking:doQuickWithdraw', data.amount, true)
         openAccountScreen()
         cb("ok")
     end
@@ -174,7 +174,7 @@ end)
 
 RegisterNUICallback("doATMWithdraw", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
-        TriggerServerEvent('qb-banking:doQuickWithdraw', data.amount, false)
+        TriggerServerEvent('slk-banking:doQuickWithdraw', data.amount, false)
         openAccountScreen()
         cb("ok")
     end
@@ -183,7 +183,7 @@ end)
 
 RegisterNUICallback("savingsDeposit", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
-        TriggerServerEvent('qb-banking:savingsDeposit', data.amount)
+        TriggerServerEvent('slk-banking:savingsDeposit', data.amount)
         openAccountScreen()
         cb("ok")
     end
@@ -192,7 +192,7 @@ end)
 
 RegisterNUICallback("savingsWithdraw", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
-        TriggerServerEvent('qb-banking:savingsWithdraw', data.amount)
+        TriggerServerEvent('slk-banking:savingsWithdraw', data.amount)
         openAccountScreen()
         cb("ok")
     end
@@ -201,7 +201,7 @@ end)
 
 RegisterNUICallback("doTransfer", function(data, cb)
     if data ~= nil then
-        TriggerServerEvent('qb-banking:initiateTransfer', data)
+        TriggerServerEvent('slk-banking:initiateTransfer', data)
         cb("ok")
     end
     cb(nil)
@@ -209,25 +209,25 @@ end)
 
 RegisterNUICallback("createDebitCard", function(data, cb)
     if data.pin ~= nil then
-        TriggerServerEvent('qb-banking:createBankCard', data.pin)
+        TriggerServerEvent('slk-banking:createBankCard', data.pin)
         cb("ok")
     end
     cb(nil)
 end)
 
 RegisterNUICallback("lockCard", function(_, cb)
-    TriggerServerEvent('qb-banking:toggleCard', true)
+    TriggerServerEvent('slk-banking:toggleCard', true)
     cb("ok")
 end)
 
 RegisterNUICallback("unLockCard", function(_, cb)
-    TriggerServerEvent('qb-banking:toggleCard', false)
+    TriggerServerEvent('slk-banking:toggleCard', false)
     cb("ok")
 end)
 
 RegisterNUICallback("updatePin", function(data, cb)
     if data.pin and data.currentBankCard then
-        TriggerServerEvent('qb-banking:updatePin', data.currentBankCard, data.pin)
+        TriggerServerEvent('slk-banking:updatePin', data.currentBankCard, data.pin)
         cb("ok")
     end
     cb(nil)
